@@ -1,13 +1,13 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlmodel import Field, Relationship, Session, select
 
-from helpers.utils import hash_file, slugify
 from models.user import User
 from helpers.aes import AESHelper as AES
 from helpers.rsa import RSAHelper as RSA
 from config import DOCUMENT_STORE, getEngine
+from helpers.utils import hash_file, hash_text
 from models.base import SQLModel, SQLModelWithID
 
 
@@ -70,12 +70,21 @@ class DocumentDownloadResponse(DocumentCommon):
 
     This model is used to represent a document that is being downloaded from the
     server. It contains the filepath and content of the document.
-
-    Attributes:
-        filepath (str): The filepath of the document.
-        content (bytes): The content of the document in bytes.
     """
     content: bytes = Field(description="The content of the document in bytes")
+
+class DocumentShareResponse(DocumentCommon):
+    """
+    Document share response model.
+
+    This model is used to represent a document that is being shared with another
+    user.
+    """
+    id: str
+    owner_id: str
+    uploaded_on: datetime
+    shared_with: list[str] = Field(default_factory=list)
+    not_shared_with: list[str] = Field(default_factory=list)
 
 class DocumentBase(DocumentDownloadResponse):
     """
@@ -84,15 +93,8 @@ class DocumentBase(DocumentDownloadResponse):
     This model is used to create new documents in the system. It contains the
     essential information required to create a document, such as the filepath
     and content of the document.
-
-    Attributes:
-        filepath (str): The filepath of the document.
-        content (bytes): The content of the document in bytes.
-        give_access_to (list[str]): A list of User IDs to give access to this
-            document. The users specified in this list will be able to access
-            the document once it is uploaded.
     """
-    give_access_to: list[str] = Field(
+    share_with: list[str] = Field(
         default_factory=list, description="User IDs to give access to this document."
     )
 
@@ -118,44 +120,10 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
         shared_keys (list[SharedKeyRegistry]): A list of SharedKeyRegistry
             objects that store the shared encryption keys for the document.
         uploaded_on (datetime): The timestamp when the document was uploaded.
-
-    Methods:
-        `write_content(content: bytes):`
-            Writes the provided encrypted content to the document's file path.
-
-        `get_content() -> bytes:`
-            Retrieves the encrypted content of the document from the document store.
-
-        `update_shared_keys_registry(user_ids: list[str], dek: bytes):`
-            Updates the shared keys registry for specified user IDs with the given DEK.
-
-        `get_dek(user_id: str, user_private_key: bytes) -> bytes:`
-            Retrieves and decrypts the DEK for a specified user using their private key.
-
-        `from_base(document: DocumentBase) -> Document:`
-            Creates a Document instance from a DocumentBase instance.
-
-        `upload(document: DocumentBase) -> Document:`
-            Uploads a new document to the system, managing its encryption and access.
-
-        `share(user_ids: list[str], owner_private_key: bytes) -> Document:`
-            Shares the document with specified users.
-
-        `download(user_id: str, user_private_key: bytes) -> DocumentDownloadResponse:`
-            Downloads the document content for a specified user.
-
-        `delete():`
-            Deletes the document from the document store and the database.
-
-        `users_with_access -> list[str]:`
-            Retrieves the list of user IDs with access to this document.
-
-        `get_shared_documents(user_id: str) -> list[Document]:`
-            Retrieves the list of documents shared with the given user.
     """
     id: str = Field(default_factory=lambda: uuid.uuid4().hex, primary_key=True)
     hash: str
-    uploaded_on: datetime = Field(default_factory=datetime.now)
+    uploaded_on: datetime = Field(default_factory=lambda: datetime.now(tz=timezone.utc))
     shared_keys: list[SharedKeyRegistry] = Relationship(
         back_populates="document",
         sa_relationship_kwargs={"primaryjoin": "SharedKeyRegistry.document_id == Document.id"},
@@ -164,7 +132,7 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
     
     @property
     def local_path(self) -> str:
-        return f"{slugify(self.owner_id)}-{self.filepath}"
+        return f"{self.id}.bin"
 
     def write_content(self, content: bytes):
         DOCUMENT_STORE.write(self.local_path, content)
@@ -201,6 +169,16 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
     @classmethod
     def from_base(cls, document: DocumentBase):
         return cls.upload(document)
+    
+    def _to_share_response(self, user_ids: list[str]):
+        return DocumentShareResponse(
+            id=self.id,
+            filepath=self.filepath,
+            owner_id=self.owner_id,
+            uploaded_on=self.uploaded_on,
+            shared_with=self.shared_with,
+            not_shared_with=list(set(user_ids) - set(self.shared_with)),
+        )
 
     @classmethod
     def upload(cls, document: DocumentBase):
@@ -208,21 +186,47 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
         if User.get_by_id(owner_id) is None:
             raise ValueError(f"User ({owner_id}) not found")
 
+        file_hash = str(hash_file(document.content, as_uuid=False))
+        doc_id = hash_text(f"{owner_id}-{document.filepath}-{file_hash}").hex
+        
+        # Check if document already exists (maybe use hash and/or filepath)
+        record = Document.get_by_id(doc_id)
+        if record is not None:
+            return record._to_share_response(document.share_with)
+
         dek = AES.get_random_key()
         encrypted_content = AES(dek).encrypt(document.content)
         doc = Document(
+            id=hash_text(f"{owner_id}-{document.filepath}-{file_hash}").hex,
             filepath=document.filepath,
             owner_id=owner_id,
-            hash=hash_file(document.content, as_uuid=False),
+            hash=file_hash,
         ).create()
-        doc.update_shared_keys_registry([owner_id, *document.give_access_to], dek)
+        doc.update_shared_keys_registry([owner_id, *document.share_with], dek)
         doc.write_content(encrypted_content)
-        return doc
+        return doc._to_share_response(document.share_with)
 
-    def share(self, user_ids: list[str], owner_private_key: bytes) -> "Document":
+    def share(self, user_ids: list[str], owner_private_key: bytes) -> DocumentShareResponse:
         dek = self.get_dek(self.owner_id, owner_private_key)
         self.update_shared_keys_registry(user_ids, dek)
-        return self
+        return self._to_share_response(user_ids)
+    
+    def revoke_access(self, user_ids: list[str], owner_private_key: bytes) -> DocumentShareResponse:
+        dek = self.get_dek(self.owner_id, owner_private_key) # This checks if the user is the owner  # noqa: F841
+        if self.owner_id in user_ids:
+            raise ValueError("Cannot revoke access to the owner")
+        with Session(getEngine()) as db:
+            rows = db.exec(
+                select(SharedKeyRegistry)
+                .where(
+                    SharedKeyRegistry.document_id == self.id,
+                    SharedKeyRegistry.user_id.in_(user_ids),
+                )
+            ).all()
+        for row in rows:
+            SharedKeyRegistry.delete(row)
+        
+        return self._to_share_response(user_ids)
 
     def download(self, user_id: str, user_private_key: bytes):
         dek = self.get_dek(user_id, user_private_key)
@@ -234,11 +238,25 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
         )
 
     def delete(self):
+        # Delete the document from the document store
         DOCUMENT_STORE.delete(self.filepath)
+        
+        # Delete the shared keys
+        with Session(getEngine()) as db:
+            rows = db.exec(
+                select(SharedKeyRegistry)
+                .where(
+                    SharedKeyRegistry.document_id == self.id,
+                )
+            ).all()
+            for row in rows:
+                SharedKeyRegistry.delete(row)
+        
+        # Delete the document itself
         super().delete()
 
     @property
-    def users_with_access(self):
+    def shared_with(self):
         with Session(getEngine()) as db:
             rows = db.exec(
                 select(SharedKeyRegistry)

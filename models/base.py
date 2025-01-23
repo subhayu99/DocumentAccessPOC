@@ -29,11 +29,11 @@ class SQLModel(BaseSQLModel):
     def upsert(self):
         try:
             return self.update()
-        except:
+        except Exception:
             try:
                 return self.create()
-            except:
-                print(f"Failed to upsert {self.__class__.__name__} with {self}")
+            except Exception as e:
+                print(f"Failed to upsert {self.__class__.__name__} with {self}: {e}")
 
     def delete(self):
         with Session(getEngine()) as db:
