@@ -1,12 +1,24 @@
 import re
 import uuid
 import hashlib
-from pathlib import Path
 from io import BytesIO
+from pathlib import Path
+from typing import TypeVar
 
 
-def slugify(text: str, replace_specials_with: str = "_", replace_spaces_with: str = "-") -> str:
-    return re.sub(r'[^\w\s-]+', replace_specials_with, text).strip().lower().replace(' ', replace_spaces_with)
+StrUuid = TypeVar("StrUuid", str, uuid.UUID)
+
+
+def slugify(
+    text: str, replace_specials_with: str = "_", replace_spaces_with: str = "-"
+) -> str:
+    return (
+        re.sub(r"[^\w\s-]+", replace_specials_with, text)
+        .strip()
+        .lower()
+        .replace(" ", replace_spaces_with)
+    )
+
 
 def hash_text(text: str, base_uuid: uuid.UUID | None = None):
     """
@@ -24,7 +36,9 @@ def hash_text(text: str, base_uuid: uuid.UUID | None = None):
     return uuid.uuid3(base_uuid, text)
 
 
-def hash_file(file: str | Path | bytes, algorithm='sha256', as_uuid=True):
+def hash_file(
+    file: str | Path | bytes, algorithm="sha256", return_type: type[StrUuid] = uuid.UUID
+) -> StrUuid:
     """
     Calculate the hash of a file or its contents.
 
@@ -32,8 +46,7 @@ def hash_file(file: str | Path | bytes, algorithm='sha256', as_uuid=True):
         file (str  | Path | bytes): Path to the file or contents of the file as bytes.
         algorithm (str): Hashing algorithm (default is 'sha256').
                          Options include 'md5', 'sha1', 'sha256', 'sha512', etc.
-        as_uuid (bool): Whether to return the hash as a UUID (default is True).
-                         If True, the hash will be converted to a UUID. Else, the hash will be returned as a string.
+        return_type (type[str | uuid.UUID]): Type to return the hash as (default is uuid.UUID).
 
     Returns:
         str | uuid.UUID: The hash of the file or its contents as a string or UUID.
@@ -43,8 +56,10 @@ def hash_file(file: str | Path | bytes, algorithm='sha256', as_uuid=True):
 
     if isinstance(file, (str, Path)):
         if not Path(file).exists():
-            raise FileNotFoundError(f"The file '{file}' does not exist in the local file system.")
-        file_reader = open(file, 'rb')
+            raise FileNotFoundError(
+                f"The file '{file}' does not exist in the local file system."
+            )
+        file_reader = open(file, "rb")
     else:
         file_reader = BytesIO(file)
 
@@ -52,11 +67,27 @@ def hash_file(file: str | Path | bytes, algorithm='sha256', as_uuid=True):
         while chunk := file_reader.read(buffer_size):
             hash_func.update(chunk)
         _hash = hash_func.hexdigest()
-        if as_uuid:
+        if return_type == uuid.UUID:
             return hash_text(_hash)
         return _hash
-    except Exception as e:
-        return f"Error: {str(e)}"
     finally:
         file_reader.close()
 
+
+def hash_bytes(
+    data: bytes, algorithm="sha256", return_type: type[StrUuid] = uuid.UUID
+) -> StrUuid:
+    """
+    Calculate the hash of the given bytes using the specified algorithm.
+
+    Args:
+        data (bytes): The data to be hashed.
+        algorithm (str): Hashing algorithm to use (default is 'sha256').
+                         Options include 'md5', 'sha1', 'sha256', 'sha512', etc.
+        return_type (type[str | uuid.UUID]): Type to return the hash as (default is uuid.UUID).
+
+    Returns:
+        str | uuid.UUID: The hash of the data as a string or UUID.
+    """
+
+    return hash_file(data, algorithm, return_type)
