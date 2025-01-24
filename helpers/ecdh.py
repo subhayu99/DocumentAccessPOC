@@ -4,7 +4,7 @@ serialization/deserialization of keys, shared secret generation, and data encryp
 """
 
 from enum import IntEnum
-from typing import NamedTuple
+from typing import Literal, NamedTuple, TypeVar, overload
 
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import serialization
@@ -23,13 +23,20 @@ class KeyPairStrings(NamedTuple):
     private_key: str
     public_key: str
 
+
 class KeyPairBytes(NamedTuple):
     private_key: bytes
     public_key: bytes
 
+
 class KeyPairObjects(NamedTuple):
     private_key: ec.EllipticCurvePrivateKey
     public_key: ec.EllipticCurvePublicKey
+
+
+# Define TypeVars for the key pair formats and str, bytes
+TKeyPair = TypeVar("TKeyPair", KeyPairObjects, KeyPairBytes, KeyPairStrings)
+StrBytes = TypeVar("StrBytes", str, bytes)
 
 
 class ECDHHelper:
@@ -39,7 +46,23 @@ class ECDHHelper:
     """
 
     @staticmethod
-    def generate_key_pair(out_format: KeyFormat | int = KeyFormat.OBJECT):
+    @overload
+    def generate_key_pair(
+        out_format: Literal[KeyFormat.OBJECT, 0],
+    ) -> KeyPairObjects: ...
+
+    @staticmethod
+    @overload
+    def generate_key_pair(out_format: Literal[KeyFormat.BYTE, 1]) -> KeyPairBytes: ...
+
+    @staticmethod
+    @overload
+    def generate_key_pair(
+        out_format: Literal[KeyFormat.STRING, 2],
+    ) -> KeyPairStrings: ...
+
+    @staticmethod
+    def generate_key_pair(out_format: KeyFormat | int = KeyFormat.OBJECT) -> TKeyPair:
         """
         Generates an elliptic curve key pair in the specified format.
 
@@ -54,19 +77,21 @@ class ECDHHelper:
 
         if out_format == KeyFormat.BYTE:
             return KeyPairStrings(
-                ECDHHelper.serialize_private_key(private_key),
-                ECDHHelper.serialize_public_key(public_key),
+                ECDHHelper.serialize_private_key(private_key, return_type=bytes),
+                ECDHHelper.serialize_public_key(public_key, return_type=bytes),
             )
         elif out_format == KeyFormat.STRING:
             return KeyPairBytes(
-                ECDHHelper.serialize_private_key(private_key).decode(),
-                ECDHHelper.serialize_public_key(public_key).decode(),
+                ECDHHelper.serialize_private_key(private_key, return_type=str),
+                ECDHHelper.serialize_public_key(public_key, return_type=str),
             )
         elif out_format == KeyFormat.OBJECT:
             return KeyPairObjects(private_key, public_key)
 
     @staticmethod
-    def serialize_private_key(private_key: ec.EllipticCurvePrivateKey, as_string: bool = False):
+    def serialize_private_key(
+        private_key: ec.EllipticCurvePrivateKey, return_type: type[StrBytes] = bytes
+    ) -> StrBytes:
         """
         Serializes a private key to PEM format.
 
@@ -79,7 +104,7 @@ class ECDHHelper:
             format=serialization.PrivateFormat.TraditionalOpenSSL,
             encryption_algorithm=serialization.NoEncryption(),
         )
-        return key.decode() if as_string else key
+        return key.decode() if return_type is str else key
 
     @staticmethod
     def deserialize_private_key(data: bytes | str):
@@ -96,7 +121,9 @@ class ECDHHelper:
         )
 
     @staticmethod
-    def serialize_public_key(public_key: ec.EllipticCurvePublicKey, as_string: bool = False):
+    def serialize_public_key(
+        public_key: ec.EllipticCurvePublicKey, return_type: type[StrBytes] = bytes
+    ) -> StrBytes:
         """
         Serializes a public key to PEM format.
 
@@ -108,7 +135,7 @@ class ECDHHelper:
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
-        return key.decode() if as_string else key
+        return key.decode() if return_type is str else key
 
     @staticmethod
     def deserialize_public_key(data: bytes | str):

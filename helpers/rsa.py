@@ -4,7 +4,7 @@ serialization/deserialization of keys, and data encryption/decryption.
 """
 
 from enum import IntEnum
-from typing import NamedTuple
+from typing import NamedTuple, TypeVar, overload, Literal
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
@@ -34,6 +34,11 @@ class KeyPairObjects(NamedTuple):
     public_key: rsa.RSAPublicKey
 
 
+# Define TypeVars for the key pair formats and str, bytes
+TKeyPair = TypeVar("TKeyPair", KeyPairObjects, KeyPairBytes, KeyPairStrings)
+StrBytes = TypeVar("StrBytes", str, bytes)
+
+
 class RSAHelper:
     """
     Helper class for RSA key exchange operations, including key pair generation,
@@ -41,9 +46,24 @@ class RSAHelper:
     """
 
     @staticmethod
-    def generate_key_pair(out_format: KeyFormat | int = KeyFormat.OBJECT):
+    @overload
+    def generate_key_pair(out_format: Literal[KeyFormat.OBJECT, 0]) -> KeyPairObjects:
+        ...
+
+    @staticmethod
+    @overload
+    def generate_key_pair(out_format: Literal[KeyFormat.BYTE, 1]) -> KeyPairBytes:
+        ...
+
+    @staticmethod
+    @overload
+    def generate_key_pair(out_format: Literal[KeyFormat.STRING, 2]) -> KeyPairStrings:
+        ...
+
+    @staticmethod
+    def generate_key_pair(out_format: KeyFormat | int = KeyFormat.OBJECT) -> TKeyPair:
         """
-        Generates a RSA key pair in the specified format.
+        Generates an RSA key pair in the specified format.
 
         :param out_format: Desired output format for the key pair (OBJECT, BYTE, STRING).
         :return: Key pair in the specified format.
@@ -59,25 +79,25 @@ class RSAHelper:
         public_key = private_key.public_key()
 
         if out_format == KeyFormat.BYTE:
-            return KeyPairStrings(
-                RSAHelper.serialize_private_key(private_key),
-                RSAHelper.serialize_public_key(public_key),
+            return KeyPairBytes(
+                RSAHelper.serialize_private_key(private_key, return_type=bytes),
+                RSAHelper.serialize_public_key(public_key, return_type=bytes),
             )
         elif out_format == KeyFormat.STRING:
-            return KeyPairBytes(
-                RSAHelper.serialize_private_key(private_key).decode(),
-                RSAHelper.serialize_public_key(public_key).decode(),
+            return KeyPairStrings(
+                RSAHelper.serialize_private_key(private_key, return_type=str),
+                RSAHelper.serialize_public_key(public_key, return_type=str),
             )
         elif out_format == KeyFormat.OBJECT:
             return KeyPairObjects(private_key, public_key)
 
     @staticmethod
-    def serialize_private_key(private_key: rsa.RSAPrivateKey, as_string: bool = False):
+    def serialize_private_key(private_key: rsa.RSAPrivateKey, return_type: type[StrBytes] = bytes) -> StrBytes:
         """
         Serializes a private key to PEM format.
 
-        :param private_key: Elliptic curve private key.
-        :param as_string: Whether to return the serialized key as a string or bytes.
+        :param private_key: RSA private key.
+        :param return_type: Whether to return the serialized key as a string or bytes.
         :return: Serialized private key in PEM format.
         """
         key = private_key.private_bytes(
@@ -85,15 +105,15 @@ class RSAHelper:
             format=serialization.PrivateFormat.PKCS8,
             encryption_algorithm=serialization.NoEncryption(),
         )
-        return key.decode() if as_string else key
+        return key.decode() if return_type is str else key
 
     @staticmethod
     def deserialize_private_key(data: bytes | str):
         """
-        Deserializes a PEM-encoded private key from bytes or string.
+        Deserializes a PEM-encoded private key from bytes or hex string.
 
-        :param data: Serialized private key in bytes or string format.
-        :return: Elliptic curve private key object.
+        :param data: Serialized private key in bytes or hex string format.
+        :return: RSA private key object.
         """
         if isinstance(data, str):
             data = data.encode()
@@ -106,27 +126,27 @@ class RSAHelper:
             raise ValueError(f"Failed to deserialize private key: {e}")
 
     @staticmethod
-    def serialize_public_key(public_key: rsa.RSAPublicKey, as_string: bool = False):
+    def serialize_public_key(public_key: rsa.RSAPublicKey, return_type: type[StrBytes] = bytes) -> StrBytes:
         """
         Serializes a public key to PEM format.
 
-        :param public_key: Elliptic curve public key.
-        :param as_string: Whether to return the serialized key as a string or bytes.
-        :return: Serialized public key in PEM format.
+        :param public_key: RSA public key.
+        :param return_type: Desired return type for the serialized key (str or bytes).
+        :return: Serialized public key in PEM format as a string or bytes.
         """
         key = public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
-        return key.decode() if as_string else key
+        return key.decode() if return_type is str else key
 
     @staticmethod
     def deserialize_public_key(data: bytes | str):
         """
-        Deserializes a PEM-encoded public key from bytes or string.
+        Deserializes a PEM-encoded public key from bytes or hex string.
 
-        :param data: Serialized public key in bytes or string format.
-        :return: Elliptic curve public key object.
+        :param data: Serialized public key in bytes or hex string format.
+        :return: RSA public key object.
         """
         if isinstance(data, str):
             data = data.encode()
@@ -138,6 +158,12 @@ class RSAHelper:
 
     @staticmethod
     def get_padding():
+        """
+        Returns an OAEP padding object configured with MGF1 using SHA-256
+        as the hash algorithm. This padding is used for RSA encryption
+        to provide additional security measures, such as preventing
+        chosen ciphertext attacks. No label is used in this configuration.
+        """
         return padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()),  # Mask generation function
             algorithm=hashes.SHA256(),  # Hash algorithm used for OAEP
@@ -205,7 +231,7 @@ class RSAHelper:
         try:
             public_key.verify(signature, data, RSAHelper.get_padding(), hashes.SHA256())
             return True
-        except Exception as e:
+        except Exception:
             return False
 
     @staticmethod
