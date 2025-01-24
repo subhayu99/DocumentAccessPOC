@@ -7,7 +7,7 @@ from typing import Literal
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
-from helpers.utils import hash_text
+from helpers.utils import hash_bytes
 
 
 class AESHelper:
@@ -26,14 +26,16 @@ class AESHelper:
         if not isinstance(key, bytes):
             raise ValueError("Cannot convert key to bytes.")
         
+        if len(key) not in [16, 24, 32]:
+            # This is a hacky way to resize the key to an UUID and then get the hex of it
+            key = hash_bytes(key).hex.encode()
+        
         self.key = key
     
     @staticmethod
     def try_encode_str(key: str) -> bytes | None:
         if not isinstance(key, str):
             return key
-        if len(key) not in [16, 24, 32]:
-            key = hash_text(key).hex
         try:
             return bytes.fromhex(key)
         except Exception:
