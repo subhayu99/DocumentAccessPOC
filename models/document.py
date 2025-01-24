@@ -186,7 +186,7 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
         if User.get_by_id(owner_id) is None:
             raise ValueError(f"User ({owner_id}) not found")
 
-        file_hash = str(hash_file(document.content, as_uuid=False))
+        file_hash = hash_file(document.content, return_type=str)
         doc_id = hash_text(f"{owner_id}-{document.filepath}-{file_hash}").hex
         
         # Check if document already exists (maybe use hash and/or filepath)
@@ -212,7 +212,9 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
         return self._to_share_response(user_ids)
     
     def revoke_access(self, user_ids: list[str], owner_private_key: bytes) -> DocumentShareResponse:
-        dek = self.get_dek(self.owner_id, owner_private_key) # This checks if the user is the owner  # noqa: F841
+        # This checks if the user is the owner
+        dek = self.get_dek(self.owner_id, owner_private_key)  # noqa: F841
+        
         if self.owner_id in user_ids:
             raise ValueError("Cannot revoke access to the owner")
         with Session(getEngine()) as db:

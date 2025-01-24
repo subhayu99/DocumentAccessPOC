@@ -4,6 +4,8 @@ from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 from backends.filesystem.abstract_fs import AbstractFileSystem
 
 
+PERMISSION_ERROR = PermissionError("AWS credentials are missing or incomplete.")
+
 class S3FileSystem(AbstractFileSystem):
     """S3 file system implementation of the FileSystemInterface."""
 
@@ -12,7 +14,7 @@ class S3FileSystem(AbstractFileSystem):
         self.region = region
         self.s3 = boto3.client("s3", region_name=region)
 
-    def read(self, relative_path: str):
+    def read(self, relative_path: str) -> bytes:
         """Read data from the S3 file."""
         try:
             response = self.s3.get_object(Bucket=self.bucket_name, Key=relative_path)
@@ -22,16 +24,16 @@ class S3FileSystem(AbstractFileSystem):
                 f"The file '{relative_path}' does not exist in the S3 bucket."
             )
         except (NoCredentialsError, PartialCredentialsError):
-            raise PermissionError("AWS credentials are missing or incomplete.")
+            raise PERMISSION_ERROR
 
     def write(self, relative_path: str, data: bytes):
         """Write data to an S3 file."""
         try:
             self.s3.put_object(Bucket=self.bucket_name, Key=relative_path, Body=data)
         except (NoCredentialsError, PartialCredentialsError):
-            raise PermissionError("AWS credentials are missing or incomplete.")
+            raise PERMISSION_ERROR
 
-    def list(self, relative_dir: str):
+    def list(self, relative_dir: str) -> list[str]:
         """List files in the specified S3 bucket."""
         try:
             response = self.s3.list_objects_v2(
@@ -41,7 +43,7 @@ class S3FileSystem(AbstractFileSystem):
                 return [item["Key"] for item in response["Contents"]]
             return []
         except (NoCredentialsError, PartialCredentialsError):
-            raise PermissionError("AWS credentials are missing or incomplete.")
+            raise PERMISSION_ERROR
 
     def delete(self, relative_path: str):
         """Delete the file."""
@@ -52,4 +54,4 @@ class S3FileSystem(AbstractFileSystem):
                 f"The file '{relative_path}' does not exist in the S3 bucket."
             )
         except (NoCredentialsError, PartialCredentialsError):
-            raise PermissionError("AWS credentials are missing or incomplete.")
+            raise PERMISSION_ERROR

@@ -17,6 +17,8 @@ class LocalFileSystem(AbstractFileSystem):
         path = self.root / relative_path
         if not path.exists():
             raise FileNotFoundError(f"The file '{relative_path}' does not exist.")
+        if not path.is_file():
+            raise TypeError(f"The file '{relative_path}' is not a file.")
         
         with open(self.root / relative_path, 'rb') as file:
             return file.read()
