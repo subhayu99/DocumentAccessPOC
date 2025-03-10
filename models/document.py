@@ -141,6 +141,21 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
         return DOCUMENT_STORE.read(self.local_path)
 
     def update_shared_keys_registry(self, user_ids: list[str], dek: bytes):
+        """
+        Updates the shared keys registry for the given users.
+
+        This function updates the SharedKeyRegistry table with the given user
+        IDs and the Data Encryption Key (DEK) for the document. The DEK is
+        encrypted using the public key of each user and stored in the
+        SharedKeyRegistry table.
+
+        Args:
+            user_ids (list[str]): A list of User IDs to update the shared
+                keys registry for.
+            dek (bytes): The Data Encryption Key (DEK) to store in the
+                SharedKeyRegistry table. The DEK is encrypted using the
+                public key of each user before it is stored.
+        """
         user_id_obj_map = User.get_id_obj_map(user_ids)
         for user_id, user in user_id_obj_map.items():
             shared_key = SharedKeyRegistry(
@@ -151,6 +166,20 @@ class Document(SQLModelWithID, DocumentCommon, table=True):
             shared_key.upsert()
 
     def get_dek(self, user_id: str, user_private_key: bytes):
+        """
+        Get the DEK for the given user_id, using the private key provided.
+
+        Args:
+            user_id (str): The ID of the user.
+            user_private_key (bytes): The user's private key.
+
+        Returns:
+            bytes: The DEK for the document.
+
+        Raises:
+            ValueError: If the document is not shared with the user or if the
+                private key is invalid.
+        """
         with Session(getEngine()) as db:
             rows = db.exec(
                 select(SharedKeyRegistry)
