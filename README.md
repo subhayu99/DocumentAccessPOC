@@ -120,7 +120,7 @@ The database schema is designed to support permissions based on:
 ┌───────────────┐      ┌────────────────────┐      ┌───────────────────┐
 │  User Client  │      │   FastAPI Server   │      │  Storage Backend  │
 │               │◄────►│                    │◄────►│ (e.g., Local, S3) │
-│  - JWT Token  │      │  • API Endpoints   │      │                   │
+│  • JWT Token  │      │  • API Endpoints   │      │                   │
 │               │      │  • JWT Validation  │      │  • Encrypted      │
 └───────────────┘      │  • Access Logic    │      │    Documents      │
                        │  • Crypto Ops      │      │                   │
