@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from backends.filesystem.abstract_fs import AbstractFileSystem
+from backends.filesystem.abstractfs import AbstractFileSystem
 
 
 class LocalFileSystem(AbstractFileSystem):

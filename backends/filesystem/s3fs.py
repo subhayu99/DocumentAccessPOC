@@ -1,7 +1,7 @@
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
-from backends.filesystem.abstract_fs import AbstractFileSystem
+from backends.filesystem.abstractfs import AbstractFileSystem
 
 
 PERMISSION_ERROR = PermissionError("AWS credentials are missing or incomplete.")
