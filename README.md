@@ -40,7 +40,7 @@
   - [🗂️ Project Structure](#️-project-structure)
   - [🗺️ Extensibility and Roadmap](#️-extensibility-and-roadmap)
     - [Architectural Extensibility](#architectural-extensibility)
-    - [Development Roadmap](#development-roadmap)
+    - [Roadmap](#roadmap)
       - [Phase 1: Foundational Backend (✅ Completed in this PoC)](#phase-1-foundational-backend--completed-in-this-poc)
       - [Phase 2: Hardening for Production Backend](#phase-2-hardening-for-production-backend)
       - [Phase 3: Building the Full Application Ecosystem](#phase-3-building-the-full-application-ecosystem)
@@ -66,7 +66,7 @@ In modern organizations, controlling document access is complex and fraught with
 This project introduces a secure system where each document is encrypted with a unique key. Access is then managed through a central **SharedKeyRegistry**, which grants permissions on a per-user, per-document basis without ever exposing the document's content to the server.
 
 ✅ **Zero-Trust for Data at Rest**: Even system administrators cannot access document content without authorization.  
-✅ **Granular Control Architecture**: The database schema is built for fine-grained permissions (see [Roadmap](#development-roadmap)).  
+✅ **Granular Control Architecture**: The database schema is built for fine-grained permissions (see [Roadmap](#roadmap)).  
 ✅ **No Duplication**: A single encrypted document is stored, with access managed dynamically.  
 ✅ **Scalable by Design**: Efficiently manage permissions for thousands of users and documents.  
 ✅ **Secure Collaboration**: Multiple users can work on the same secure document version.
@@ -437,29 +437,34 @@ The current design makes it straightforward to add more sophisticated features w
 *   **Group-Based Permissions:** The groundwork is already laid for team- and project-based sharing. Building API endpoints to manage these groups and link them to documents is a logical next step.
 *   **Attribute-Based Access:** In the future, the model could even be extended to support attribute-based access control (ABAC), where permissions are granted based on user attributes (e.g., "only users from the 'Finance' department in 'Europe' can access").
 
-### Development Roadmap
+### Roadmap
 
 The path from this PoC to a full-featured, production-ready system can be broken down into clear phases. This roadmap directly addresses the limitations outlined in the section above.
 
 #### Phase 1: Foundational Backend (✅ Completed in this PoC)
--   [x] Core cryptographic engine using AES-GCM and RSA.
--   [x] Secure, per-user, per-document access control model.
--   [x] Stateless JWT-based authentication.
--   [x] Basic CRUD operations for users and documents.
+
+- [x] Core cryptographic engine using AES-GCM and RSA.
+- [x] Secure, per-user, per-document access control model.
+- [x] Stateless JWT-based authentication.
+- [x] Basic CRUD operations for users and documents.
 
 #### Phase 2: Hardening for Production Backend
+
 *This phase focuses on making the backend robust, secure, and ready for integration.*
--   [ ] **Implement Key Rotation:** Introduce a mechanism to re-encrypt documents for true cryptographic revocation when a user's access is removed.
--   [ ] **Comprehensive Audit Logging:** Create a tamper-resistant audit trail for all security-sensitive events (logins, shares, access, deletions).
--   [ ] **Document Versioning:** Build a system to manage document version history, preventing data loss in collaborative environments.
--   [ ] **Team & Project Management:** Implement the API endpoints to create, manage, and assign users to teams and projects, enabling group-based sharing.
+
+- [ ] **Implement Key Rotation:** Introduce a mechanism to re-encrypt documents for true cryptographic revocation when a user's access is removed.
+- [ ] **Comprehensive Audit Logging:** Create a tamper-resistant audit trail for all security-sensitive events (logins, shares, access, deletions).
+- [ ] **Document Versioning:** Build a system to manage document version history, preventing data loss in collaborative environments.
+- [ ] **Team & Project Management:** Implement the API endpoints to create, manage, and assign users to teams and projects, enabling group-based sharing.
 
 #### Phase 3: Building the Full Application Ecosystem
+
 *This phase focuses on building the user-facing components and enterprise-grade features.*
--   [ ] **Client-Side Crypto & UI:** Develop a frontend application (web, desktop, or mobile) that performs all private key operations locally. This achieves a full zero-knowledge architecture and is the most critical step for a production system.
--   [ ] **User-Friendly Account Recovery:** Implement a secure workflow for users to back up and use a one-time Recovery Key.
--   [ ] **SSO / LDAP Integration:** Allow users to authenticate using existing enterprise identity providers.
--   [ ] **Advanced Sharing Controls:** Add features like expiring links, password-protected public shares, and read-only access.
+
+- [ ] **Client-Side Crypto & UI:** Develop a frontend application (web, desktop, or mobile) that performs all private key operations locally. This achieves a full zero-knowledge architecture and is the most critical step for a production system.
+- [ ] **User-Friendly Account Recovery:** Implement a secure workflow for users to back up and use a one-time Recovery Key.
+- [ ] **SSO / LDAP Integration:** Allow users to authenticate using existing enterprise identity providers.
+- [ ] **Advanced Sharing Controls:** Add features like expiring links, password-protected public shares, and read-only access.
 
 ## ❓ FAQ
 

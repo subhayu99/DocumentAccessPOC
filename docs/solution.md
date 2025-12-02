@@ -16,6 +16,7 @@ Several alternative strategies could have been employed to solve this problem, i
 Users are assigned specific roles (e.g., Admin, Manager, Employee), and each role is granted predefined permissions (e.g., Admin can access all documents, Manager can access department-level documents, Employee can only access their own documents).
 
 **Problems:**  
+
 - **Lack of Granularity:** RBAC doesn’t easily accommodate scenarios where permissions need to vary based on Teams, Projects, or Organization Levels. For example, it’s challenging to limit access to "HR documents related to Project X."  
 - **Overly Broad Access:** Roles like Admin or Developer might inherently have access to everything, which undermines confidentiality for sensitive documents.  
 - **Difficult to Adapt:** As teams or projects change, or as new organizational levels are added, the roles and their associated permissions need frequent updates, leading to increased maintenance overhead.  
@@ -28,6 +29,7 @@ Users are assigned specific roles (e.g., Admin, Manager, Employee), and each rol
 Document access is managed directly by the file system or storage backend, where each file has permissions set for read, write, and execute operations based on users or groups.
 
 **Problems:**  
+
 - **Scalability Issues:** Managing file-level permissions becomes unmanageable as the number of users and documents grows. Every new document or user addition requires manual adjustments.  
 - **No Team-Based Logic:** File systems don’t inherently understand organizational structures like Teams or Projects, making it hard to enforce hierarchical or team-specific permissions.  
 - **Duplication for Sharing:** Sharing a document often requires duplicating it into a different location with separate permissions, leading to storage inefficiency and version control problems (e.g., conflicting edits or outdated copies).  
@@ -40,6 +42,7 @@ Document access is managed directly by the file system or storage backend, where
 Each document is associated with a list of users and their specific permissions (e.g., User A: Read, User B: Write/Delete).
 
 **Problems:**  
+
 - **Frequent Updates:** In dynamic environments, ACLs require constant updates whenever a team member joins, leaves, or changes roles, which is error-prone.  
 - **Complexity in Management:** Managing ACLs for thousands of documents and users becomes unwieldy, especially when users belong to multiple teams or projects.  
 - **Duplication for Sharing:** If the same document needs to be shared with different permissions across multiple teams, duplication may again be necessary to handle separate ACLs, creating inefficiencies and inconsistencies.  
@@ -52,6 +55,7 @@ Each document is associated with a list of users and their specific permissions 
 Documents are encrypted, and access is controlled by sharing encryption keys with authorized users. Public key cryptography (e.g., RSA) is often used to secure the keys.
 
 **Problems:**  
+
 - **Key Management Complexity:** Sharing, storing, and revoking encryption keys is non-trivial. Mistakes in key handling can compromise security or lead to access issues.  
 - **Collaboration Challenges:** If multiple users need write access to a document, managing and updating the encryption keys for every change can become cumbersome.  
 - **Duplication for Sharing:** To share a document with a different set of users, a new encryption key may need to be generated and the document re-encrypted, leading to potential duplication of encrypted versions.  
