@@ -1,0 +1,1609 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A proof-of-concept secure document management system with granular access control.">
+      
+      
+      
+        <link rel="canonical" href="https://subhayu99.github.io/DocumentAccessPOC/">
+      
+      
+      
+        <link rel="next" href="quick-start/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Intro - DocumentAccessPOC</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documentaccesspoc" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="DocumentAccessPOC" class="md-header__button md-logo" aria-label="DocumentAccessPOC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DocumentAccessPOC
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Intro
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/subhayu99/DocumentAccessPOC" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    subhayu99/DocumentAccessPOC
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="solution/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="api/models/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="DocumentAccessPOC" class="md-nav__button md-logo" aria-label="DocumentAccessPOC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DocumentAccessPOC
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/subhayu99/DocumentAccessPOC" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    subhayu99/DocumentAccessPOC
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#problem-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚩 Problem Statement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💡 Solution Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-genesis-solving-a-real-world-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌱 Project Genesis: Solving a Real-World Challenge
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 API Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📚 API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#positioning-in-the-security-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🆚 Positioning in the Security Landscape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#poc-scope-production-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ PoC Scope &amp; Production Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🗂️ Project Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🙏 Acknowledgments
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🙏 Acknowledgments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-note-on-passphrase-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Note on Passphrase Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📜 License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="solution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solution Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="extensibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/helpers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Helpers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/backends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/root/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Root
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#problem-statement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🚩 Problem Statement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        💡 Solution Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-genesis-solving-a-real-world-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🌱 Project Genesis: Solving a Real-World Challenge
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🏗️ Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📚 API Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📚 API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#positioning-in-the-security-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🆚 Positioning in the Security Landscape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#poc-scope-production-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠️ PoC Scope &amp; Production Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🗂️ Project Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🙏 Acknowledgments
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🙏 Acknowledgments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-note-on-passphrase-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Note on Passphrase Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📜 License
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="documentaccesspoc">DocumentAccessPOC</h1>
+<blockquote>
+<p>A proof-of-concept secure document management system that solves the critical challenge of granular access control in organizational environments where traditional permission systems fall short.</p>
+</blockquote>
+<p><a href="https://python.org"><img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-blue.svg" /></a>
+<a href="https://fastapi.tiangolo.com"><img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-0.115%2B-green.svg" /></a>
+<a href="https://pypi.org/project/cryptography/"><img alt="Cryptography" src="https://img.shields.io/badge/crypto-pycryptodome_%26_cryptography-brightgreen" /></a></p>
+<h2 id="problem-statement">🚩 Problem Statement</h2>
+<p>In modern organizations, controlling document access is complex and fraught with security risks. Traditional approaches like Role-Based Access Control (RBAC), file system permissions, and Access Control Lists (ACLs) struggle with:</p>
+<ul>
+<li><strong>Overly Broad Access</strong>: Developers and DevOps teams often have administrative access to everything, undermining confidentiality.</li>
+<li><strong>Lack of Granularity</strong>: Difficulty controlling access based on multiple dimensions (e.g., Teams, Projects, and Organization Levels).</li>
+<li><strong>Document Duplication</strong>: Sharing documents often requires creating multiple copies with different permissions, leading to versioning chaos.</li>
+<li><strong>Scalability Issues</strong>: Managing permissions becomes unmanageable as users and documents grow.</li>
+<li><strong>Security Vulnerabilities</strong>: System administrators can access sensitive content regardless of intended restrictions.</li>
+</ul>
+<h2 id="solution-overview">💡 Solution Overview</h2>
+<p>This project introduces a secure system where each document is encrypted with a unique key. Access is then managed through a central <strong>SharedKeyRegistry</strong>, which grants permissions on a per-user, per-document basis without ever exposing the document's content to the server.</p>
+<p>✅ <strong>Zero-Trust for Data at Rest</strong>: Even system administrators cannot access document content without authorization.<br />
+✅ <strong>Granular Control Architecture</strong>: The database schema is built for fine-grained permissions (see <a href="roadmap">Roadmap</a>).<br />
+✅ <strong>No Duplication</strong>: A single encrypted document is stored, with access managed dynamically.<br />
+✅ <strong>Scalable by Design</strong>: Efficiently manage permissions for thousands of users and documents.<br />
+✅ <strong>Secure Collaboration</strong>: Multiple users can work on the same secure document version.</p>
+<h2 id="project-genesis-solving-a-real-world-challenge">🌱 Project Genesis: Solving a Real-World Challenge</h2>
+<p>This project wasn't born from a theoretical exercise; it was created to solve a critical, real-world security gap encountered in modern software development.</p>
+<blockquote>
+<p>The journey began while a colleague was building an internal project management tool. The tool required a document storage system where teams (like Finance or HR) could upload highly sensitive files. The core problem was this: <strong>how can you guarantee that sensitive documents are inaccessible even to the DevOps and Cloud Admins who manage the infrastructure?</strong> With direct access to storage backends like AWS S3, traditional permissions are easily bypassed.</p>
+</blockquote>
+<p>While concepts like using a Document Encryption Key (DEK) were known, existing systems didn't offer a clear solution for the most complex part: <strong>managing access for multiple, specific users in a zero-trust way.</strong></p>
+<p>The breakthrough came from tackling that multi-user challenge from first principles:
+1.  A single, encrypted document should exist, avoiding duplication.
+2.  To grant access, its unique DEK must be shared securely.
+3.  Instead of sharing the DEK directly, it could be encrypted <em>separately</em> for each authorized user using their individual public key.
+4.  A central registry could then map which users have access to which documents by storing these individually-encrypted DEKs.</p>
+<p>This design elegantly solved the problem. Sharing a document with a new user becomes a lightweight operation of encrypting the DEK one more time, and revocation is as simple as deleting an entry—all without the server ever needing to see the plaintext keys.</p>
+<p>Only after its conception was it clear that this independently-derived architecture aligns perfectly with robust industry best practices. It's a powerful implementation of what is known as <strong>envelope encryption</strong> combined with a <strong>dynamic key registry</strong> for cryptographic access control. This PoC serves as a blueprint for developers facing the same dilemma, demonstrating a practical path to building truly secure systems.</p>
+<h2 id="architecture">🏗️ Architecture</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌───────────────┐      ┌────────────────────┐      ┌───────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│  User Client  │      │   FastAPI Server   │      │  Storage Backend  │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│               │◄────►│                    │◄────►│ (e.g., Local, S3) │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  • JWT Token  │      │  • API Endpoints   │      │                   │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│               │      │  • JWT Validation  │      │  • Encrypted      │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>└───────────────┘      │  • Access Logic    │      │    Documents      │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                       │  • Crypto Ops      │      │                   │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                       └────────────────────┘      └───────────────────┘
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                                  │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                  ▼
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                      ┌───────────────────────┐
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                      │       Database        │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                      │                       │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                      │  • Users              │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                      │  • Documents          │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                      │  • Public Keys        │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                      │  • SharedKeyRegistry  │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                      └───────────────────────┘
+</code></pre></div>
+<h2 id="api-reference">📚 API Reference</h2>
+<h4 id="authentication">Authentication</h4>
+<ul>
+<li><code>POST /users</code>: Create a new user account.</li>
+<li><code>POST /token</code>: Authenticate and get a JWT token.</li>
+</ul>
+<h4 id="users">Users</h4>
+<ul>
+<li><code>GET /users/me</code>: Get the profile of the currently authenticated user.</li>
+<li><code>GET /users</code>: Get public profiles of users by their IDs.</li>
+</ul>
+<h4 id="documents">Documents</h4>
+<ul>
+<li><code>POST /documents</code>: Upload, encrypt, and share a new document.</li>
+<li><code>GET /documents</code>: List all documents accessible to the current user.</li>
+<li><code>GET /documents/{doc_id}</code>: Download and decrypt a document.</li>
+<li><code>PUT /documents/{doc_id}/share</code>: Share a document with more users.</li>
+<li><code>PUT /documents/{doc_id}/revoke</code>: Revoke user access from a document.</li>
+<li><code>DELETE /documents/{doc_id}</code>: Securely delete a document.</li>
+</ul>
+<h2 id="positioning-in-the-security-landscape">🆚 Positioning in the Security Landscape</h2>
+<p>When solving a fundamental problem like secure data access, it's common for independent efforts to converge on similar architectural patterns. After developing this PoC, a review of the landscape shows that the core principles used here—like envelope encryption and cryptographic access control—are industry best practices, validating the soundness of the approach.</p>
+<p>However, the <em>focus</em> and <em>purpose</em> of this project are fundamentally different from existing commercial applications. This PoC is not intended to be a feature-complete alternative to a platform like Tresorit or Nextcloud. Instead, its unique value lies in being a:</p>
+<p><strong>Developer-centric, unopinionated, and self-hostable backend blueprint.</strong></p>
+<p>The following comparison clarifies this distinction, showing how this project fills a specific niche for developers who need to build secure document functionality into their <em>own</em> applications, rather than adopting a monolithic, all-in-one platform.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature / Aspect</th>
+<th style="text-align: center;">DocumentAccessPOC (This PoC)</th>
+<th style="text-align: center;">Commercial SaaS (e.g., Tresorit)</th>
+<th style="text-align: center;">Open-Source Platform (e.g., Nextcloud)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Security Model</strong></td>
+<td style="text-align: center;">✅ <strong>Zero-Trust</strong></td>
+<td style="text-align: center;">✅ <strong>Zero-Knowledge</strong></td>
+<td style="text-align: center;">✅ (With E2EE Module)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Deployment Model</strong></td>
+<td style="text-align: center;"><strong>Self-Hosted API</strong></td>
+<td style="text-align: center;">Managed SaaS</td>
+<td style="text-align: center;"><strong>Self-Hosted App</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Granular Control</strong></td>
+<td style="text-align: center;">✅ (Architectural)</td>
+<td style="text-align: center;">✅ (Full UI)</td>
+<td style="text-align: center;">✅ (Full UI)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Cryptographic Revocation</strong></td>
+<td style="text-align: center;">⚠️ Partial (No Key Rotation)</td>
+<td style="text-align: center;">✅ Complete</td>
+<td style="text-align: center;">⚠️ Partial / Complex</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Client-Side Keys</strong></td>
+<td style="text-align: center;">⚠️ Server-Side (In-Memory)</td>
+<td style="text-align: center;">✅ Yes</td>
+<td style="text-align: center;">✅ Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Focus</strong></td>
+<td style="text-align: center;"><strong>Secure Backend/API</strong></td>
+<td style="text-align: center;"><strong>End-User Application</strong></td>
+<td style="text-align: center;"><strong>Full Collaboration Platform</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Takeaway:</strong> This PoC serves as a foundational <strong>secure backend</strong>. Its purpose is to provide a clear, working model of the core cryptographic and access control logic that developers can learn from, adapt, and integrate into their own products.</p>
+<h2 id="poc-scope-production-considerations">⚠️ PoC Scope &amp; Production Considerations</h2>
+<p>This project is a Proof-of-Concept designed to demonstrate a secure architectural pattern. The following table outlines key production-level features that were intentionally scoped out to maintain a tight focus on the core backend logic. It details the current PoC's behavior, the ideal production approach, and the rationale behind each scoping decision.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Area / Feature</th>
+<th style="text-align: left;">Current PoC Implementation</th>
+<th style="text-align: left;">Production-Ready Approach</th>
+<th style="text-align: left;">Scoping Rationale for PoC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Cryptographic Revocation</strong></td>
+<td style="text-align: left;">Removes user's key from the registry, preventing future API access.</td>
+<td style="text-align: left;"><strong>Key Rotation:</strong> Re-encrypt the document with a new key and distribute it to remaining users.</td>
+<td style="text-align: left;">This is a complex and computationally expensive workflow, outside the core goal of demonstrating the primary access and sharing mechanism.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Private Key Handling</strong></td>
+<td style="text-align: left;">Private key is briefly decrypted in server memory during authentication.</td>
+<td style="text-align: left;"><strong>Client-Side Cryptography:</strong> All private key operations occur on the client (browser/app), achieving a full zero-knowledge architecture.</td>
+<td style="text-align: left;">This requires a dedicated frontend application with crypto libraries. The PoC's focus was on the <strong>backend API</strong> that such a client would consume.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Account Recovery</strong></td>
+<td style="text-align: left;">None. A lost passphrase results in permanent data inaccessibility.</td>
+<td style="text-align: left;"><strong>User-Managed Recovery Key:</strong> A one-time key is generated during onboarding that the user must save to restore access if their passphrase is lost.</td>
+<td style="text-align: left;">This is an application-layer user flow, separate from the core cryptographic backend this PoC aims to demonstrate.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Collaboration &amp; Compliance</strong></td>
+<td style="text-align: left;">No document versioning or audit trails are implemented.</td>
+<td style="text-align: left;"><strong>Dedicated Subsystems:</strong> A robust versioning engine to prevent data loss and a tamper-resistant audit log for security and compliance.</td>
+<td style="text-align: left;">These are both major subsystems. Implementing them would have detracted from the PoC's primary goal of proving the core zero-trust access model.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="project-structure">🗂️ Project Structure</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>DocumentAccessPOC/
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── main.py                 # FastAPI application entry point
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── requirements.txt        # Python dependencies
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── config.py               # Configuration settings (DB, JWT, Storage)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├── models/                 # Data models and schemas (SQLModel)
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>├── helpers/                # Cryptographic utilities (AES, RSA, JWT)
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>├── backends/               # Storage and database backend abstractions
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>├── logic/                  # Business logic and dependencies
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>└── docs/                   # Additional documentation
+</code></pre></div>
+<h2 id="acknowledgments">🙏 Acknowledgments</h2>
+<p>Thanks to the <strong>FastAPI</strong> team and the contributors to the <strong>PyCryptodome</strong> and <strong>Cryptography</strong> libraries for their excellent tools.</p>
+<h3 id="a-note-on-passphrase-generation">A Note on Passphrase Generation</h3>
+<p>The unique, one-time passphrases in this project are generated using a custom library, <strong>BetterPassphrase</strong>, also created by <a href="https://github.com/subhayu99">me</a>. It's designed to create secure, memorable passphrases from grammatically correct phrases.</p>
+<p><strong>Key Features of BetterPassphrase:</strong></p>
+<ul>
+<li><strong>Secure &amp; Memorable</strong>: Generates grammatically correct phrases that are easier to remember than random strings.</li>
+<li><strong>Security Focused</strong>: Includes entropy calculations to balance memorability with cryptographic strength.</li>
+<li><strong>Highly Customizable</strong>: Control word count, separators, capitalization, and more.</li>
+<li><strong>Powerful CLI</strong>: A full command-line interface for batch generation and file output.</li>
+</ul>
+<p>You can check it out on <a href="https://pypi.org/project/BetterPassphrase/"><strong>PyPI</strong></a> or explore the source code on <a href="https://github.com/subhayu99/BetterPassphrase"><strong>GitHub</strong></a>.</p>
+<h2 id="license">📜 License</h2>
+<p>This is a Proof-of-Concept project and is not currently available under a formal open-source license. It is intended for demonstration and educational purposes.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "toc.follow"], "search": "assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
