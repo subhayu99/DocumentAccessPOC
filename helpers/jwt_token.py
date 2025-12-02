@@ -7,9 +7,17 @@ from config import JWT_ALGORITHM, JWT_SECRET_KEY, JWT_EXPIRE_MINUTES
 
 
 def create_access_token(
-    data: dict, expires_delta: timedelta = timedelta(minutes=JWT_EXPIRE_MINUTES)
-):
-    """Generates a JWT token."""
+    data: dict[str, str], expires_delta: timedelta = timedelta(minutes=JWT_EXPIRE_MINUTES)
+) -> str:
+    """Generates a JWT token.
+
+    Args:
+        data (dict[str, str]): The payload of the JWT token.
+        expires_delta (timedelta, optional): The time delta for token expiration. Defaults to timedelta(minutes=JWT_EXPIRE_MINUTES).
+
+    Returns:
+        str: The generated JWT token.
+    """
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(tz=timezone.utc) + expires_delta
@@ -19,17 +27,34 @@ def create_access_token(
     return jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
 
 
-def _get_exception(detail: str, status_code: int = status.HTTP_401_UNAUTHORIZED):
+def _get_exception(detail: str, status_code: int = status.HTTP_401_UNAUTHORIZED) -> HTTPException:
+    """Returns an HTTP exception.
+
+    Args:
+        detail (str): The detail of the exception.
+        status_code (int, optional): The status code of the exception. Defaults to status.HTTP_401_UNAUTHORIZED.
+
+    Returns:
+        HTTPException: The generated exception.
+    """
     return HTTPException(
         status_code=status_code,
         detail=detail,
         headers={"WWW-Authenticate": "Bearer"},
     )
 
+
 def decode_access_token(token: str) -> tuple[str, str]:
-    """Decodes and validates a JWT token. Returns the username and password."""
+    """Decodes and validates a JWT token. Returns the username and password.
+
+    Args:
+        token (str): The JWT token to decode.
+
+    Returns:
+        tuple[str, str]: A tuple containing the username and password.
+    """
     try:
-        payload: dict = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        payload: dict[str, str] = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
         username: str = payload.get("username")
         password: str = payload.get("password")
         if username is None:

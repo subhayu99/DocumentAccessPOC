@@ -14,8 +14,16 @@ class AESHelper:
     def __init__(self, key: bytes | str):
         """
         Initialize the AESHelper instance with the provided key.
-        Returns the hex-encoded AES key.
-        Raises a TypeError if the key is not a string or bytes.
+
+        Args:
+            key (bytes | str): The key to use for encryption and decryption.
+
+        Returns:
+            The hex-encoded AES key.
+
+        Raises:
+            TypeError: If the key is not a string or bytes.
+            ValueError: If the key is not a string or bytes and cannot be converted to bytes.
         """
         if not isinstance(key, (bytes, str)):
             raise TypeError("Key must be a string or bytes.")
@@ -34,6 +42,15 @@ class AESHelper:
     
     @staticmethod
     def try_encode_str(key: str) -> bytes | None:
+        """
+        Try to convert a string key to bytes.
+
+        Args:
+            key (str): The string key to convert.
+
+        Returns:
+            bytes | None: The converted key or None if conversion fails.
+        """
         if not isinstance(key, str):
             return key
         try:
@@ -46,10 +63,15 @@ class AESHelper:
             pass
 
     @staticmethod
-    def get_random_key(size: Literal[16, 24, 32] = 16):
+    def get_random_key(size: Literal[16, 24, 32] = 16) -> bytes:
         """
         Generate a random AES key of the specified size (16, 24, or 32 bytes).
-        Returns the key as a hex-encoded string.
+
+        Args:
+            size (Literal[16, 24, 32]): The size of the key to generate.
+
+        Returns:
+            bytes: The generated key as a hex-encoded string.
         """
         return get_random_bytes(size)
     
@@ -57,7 +79,12 @@ class AESHelper:
     def _verify_data_type(data: bytes):
         """
         Verify that the provided data is of type bytes.
-        Raises a TypeError if the data is not bytes.
+
+        Args:
+            data (bytes): The data to verify.
+
+        Raises:
+            TypeError: If the data is not bytes.
         """
         if not isinstance(data, bytes):
             raise TypeError("Data must be bytes.")
@@ -65,7 +92,12 @@ class AESHelper:
     def encrypt(self, data: bytes) -> bytes:
         """
         Encrypt data using AES in GCM mode.
-        Returns the ciphertext, which includes the nonce and authentication tag.
+
+        Args:
+            data (bytes): The data to encrypt.
+
+        Returns:
+            bytes: The ciphertext, which includes the nonce and authentication tag.
         """
         self._verify_data_type(data)
         cipher = AES.new(self.key, AES.MODE_GCM)  # GCM mode automatically generates a nonce
@@ -76,7 +108,12 @@ class AESHelper:
         """
         Decrypt data using AES in GCM mode.
         Extracts the nonce, tag, and ciphertext from the encrypted data.
-        Returns the decrypted data.
+
+        Args:
+            encrypted_data (bytes): The encrypted data to decrypt.
+
+        Returns:
+            bytes: The decrypted data.
         """
         self._verify_data_type(encrypted_data)
         nonce = encrypted_data[:16]  # GCM nonce is 16 bytes

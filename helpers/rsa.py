@@ -65,8 +65,11 @@ class RSAHelper:
         """
         Generates an RSA key pair in the specified format.
 
-        :param out_format: Desired output format for the key pair (OBJECT, BYTE, STRING).
-        :return: Key pair in the specified format.
+        Args:
+            out_format (KeyFormat): Desired output format for the key pair (OBJECT, BYTE, STRING)
+
+        Returns:
+            TKeyPair: Key pair in the specified format
         """
         if out_format not in [KeyFormat.BYTE, KeyFormat.STRING, KeyFormat.OBJECT]:
             out_format = KeyFormat.OBJECT
@@ -96,9 +99,12 @@ class RSAHelper:
         """
         Serializes a private key to PEM format.
 
-        :param private_key: RSA private key.
-        :param return_type: Whether to return the serialized key as a string or bytes.
-        :return: Serialized private key in PEM format.
+        Args:
+            private_key (rsa.RSAPrivateKey): RSA private key
+            return_type (type[StrBytes]): Whether to return the serialized key as a string or bytes
+
+        Returns:
+            StrBytes: Serialized private key in PEM format as a string or bytes
         """
         key = private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
@@ -108,12 +114,15 @@ class RSAHelper:
         return key.decode() if return_type is str else key
 
     @staticmethod
-    def deserialize_private_key(data: bytes | str):
+    def deserialize_private_key(data: bytes | str) -> rsa.RSAPrivateKey:
         """
         Deserializes a PEM-encoded private key from bytes or hex string.
 
-        :param data: Serialized private key in bytes or hex string format.
-        :return: RSA private key object.
+        Args:
+            data (bytes | str): Serialized private key in bytes or hex string format.
+
+        Returns:
+            rsa.RSAPrivateKey: Elliptic curve private key object.
         """
         if isinstance(data, str):
             data = data.encode()
@@ -130,9 +139,12 @@ class RSAHelper:
         """
         Serializes a public key to PEM format.
 
-        :param public_key: RSA public key.
-        :param return_type: Desired return type for the serialized key (str or bytes).
-        :return: Serialized public key in PEM format as a string or bytes.
+        Args:
+            public_key (rsa.RSAPublicKey): RSA public key
+            return_type (type[StrBytes]): Desired return type for the serialized key (str or bytes)
+
+        Returns:
+            StrBytes: Serialized public key in PEM format as a string or bytes
         """
         key = public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
@@ -141,12 +153,15 @@ class RSAHelper:
         return key.decode() if return_type is str else key
 
     @staticmethod
-    def deserialize_public_key(data: bytes | str):
+    def deserialize_public_key(data: bytes | str) -> rsa.RSAPublicKey:
         """
         Deserializes a PEM-encoded public key from bytes or hex string.
 
-        :param data: Serialized public key in bytes or hex string format.
-        :return: RSA public key object.
+        Args:
+            data (bytes | str): Serialized public key in bytes or hex string format
+
+        Returns:
+            rsa.RSAPublicKey: RSA public key object
         """
         if isinstance(data, str):
             data = data.encode()
@@ -157,12 +172,15 @@ class RSAHelper:
             raise ValueError(f"Failed to deserialize public key: {e}")
 
     @staticmethod
-    def get_padding():
+    def get_padding() -> padding.OAEP:
         """
         Returns an OAEP padding object configured with MGF1 using SHA-256
         as the hash algorithm. This padding is used for RSA encryption
         to provide additional security measures, such as preventing
         chosen ciphertext attacks. No label is used in this configuration.
+
+        Returns:
+            padding.OAEP: OAEP padding object configured with MGF1 using SHA-256
         """
         return padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()),  # Mask generation function
@@ -175,9 +193,12 @@ class RSAHelper:
         """
         Encrypts data using AES encryption with the given shared secret.
 
-        :param data: Data to encrypt.
-        :param public_key: Public key used for encryption.
-        :return: Encrypted data (ciphertext).
+        Args:
+            data (bytes): Data to encrypt
+            public_key (rsa.RSAPublicKey | str | bytes): Public key used for encryption, can be an RSAPublicKey object, a PEM string, or bytes
+
+        Returns:
+            bytes: Encrypted data (ciphertext)
         """
         if isinstance(public_key, (str, bytes)):
             public_key = RSAHelper.deserialize_public_key(public_key)
@@ -189,11 +210,14 @@ class RSAHelper:
         ciphertext: bytes, private_key: rsa.RSAPrivateKey | str | bytes
     ) -> bytes:
         """
-        Decrypts data using AES encryption with the given shared secret.
+        Decrypt data using AES encryption with the given shared secret.
 
-        :param ciphertext: Encrypted data (ciphertext).
-        :param private_key: Private key used for decryption.
-        :return: Decrypted data.
+        Args:
+            ciphertext (bytes): Encrypted data (ciphertext)
+            private_key (rsa.RSAPrivateKey | str | bytes): Private key used for decryption, can be an RSAPrivateKey object, a PEM string, or bytes
+
+        Returns:
+            bytes: Decrypted data
         """
         if isinstance(private_key, (str, bytes)):
             private_key = RSAHelper.deserialize_private_key(private_key)
@@ -205,9 +229,12 @@ class RSAHelper:
         """
         Signs the given data using the provided private key.
 
-        :param data: Data to be signed.
-        :param private_key: Private key used for signing, can be an RSAPrivateKey object, a PEM string, or bytes.
-        :return: The generated signature as bytes.
+        Args:
+            data (bytes): Data to be signed
+            private_key (rsa.RSAPrivateKey | str | bytes): Private key used for signing, can be an RSAPrivateKey object, a PEM string, or bytes
+
+        Returns:
+            bytes: The generated signature as bytes
         """
         if isinstance(private_key, (str, bytes)):
             private_key = RSAHelper.deserialize_private_key(private_key)
@@ -221,10 +248,13 @@ class RSAHelper:
         """
         Verifies the given signature against the given data and public key.
 
-        :param data: Data that was signed.
-        :param signature: Signature to verify.
-        :param public_key: Public key to use for verification, can be an RSAPublicKey object, a PEM string, or bytes.
-        :return: True if the signature is valid, False otherwise.
+        Args:
+            data (bytes): Data that was signed
+            signature (bytes): Signature to verify
+            public_key (rsa.RSAPublicKey | str | bytes): Public key to use for verification, can be an RSAPublicKey object, a PEM string, or bytes
+
+        Returns:
+            bool: True if the signature is valid, False otherwise
         """
         if isinstance(public_key, (str, bytes)):
             public_key = RSAHelper.deserialize_public_key(public_key)
@@ -242,9 +272,12 @@ class RSAHelper:
         """
         Verifies that the given private and public key are a matching pair.
 
-        :param private_key: Private key to verify, can be an RSAPrivateKey object, a PEM string, or bytes.
-        :param public_key: Public key to verify, can be an RSAPublicKey object, a PEM string, or bytes.
-        :return: True if the key pair is valid, False otherwise.
+        Args:
+            private_key (rsa.RSAPrivateKey | str | bytes): Private key to verify, can be an RSAPrivateKey object, a PEM string, or bytes
+            public_key (rsa.RSAPublicKey | str | bytes): Public key to verify, can be an RSAPublicKey object, a PEM string, or bytes
+
+        Returns:
+            bool: True if the key pair is valid, False otherwise
         """
         if isinstance(private_key, (str, bytes)):
             private_key = RSAHelper.deserialize_private_key(private_key)

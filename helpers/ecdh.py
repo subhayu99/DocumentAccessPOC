@@ -66,8 +66,11 @@ class ECDHHelper:
         """
         Generates an elliptic curve key pair in the specified format.
 
-        :param out_format: Desired output format for the key pair (OBJECT, BYTE, STRING).
-        :return: Key pair in the specified format.
+        Args:
+            out_format (KeyFormat | int): Desired output format for the key pair (OBJECT, BYTE, STRING).
+
+        Returns:
+            TKeyPair: Key pair in the specified format.
         """
         if out_format not in [KeyFormat.BYTE, KeyFormat.STRING, KeyFormat.OBJECT]:
             out_format = KeyFormat.OBJECT
@@ -76,12 +79,12 @@ class ECDHHelper:
         public_key = private_key.public_key()
 
         if out_format == KeyFormat.BYTE:
-            return KeyPairStrings(
+            return KeyPairBytes(
                 ECDHHelper.serialize_private_key(private_key, return_type=bytes),
                 ECDHHelper.serialize_public_key(public_key, return_type=bytes),
             )
         elif out_format == KeyFormat.STRING:
-            return KeyPairBytes(
+            return KeyPairStrings(
                 ECDHHelper.serialize_private_key(private_key, return_type=str),
                 ECDHHelper.serialize_public_key(public_key, return_type=str),
             )
@@ -90,14 +93,18 @@ class ECDHHelper:
 
     @staticmethod
     def serialize_private_key(
-        private_key: ec.EllipticCurvePrivateKey, return_type: type[StrBytes] = bytes
+        private_key: ec.EllipticCurvePrivateKey,
+        return_type: type[StrBytes] = bytes,
     ) -> StrBytes:
         """
         Serializes a private key to PEM format.
 
-        :param private_key: Elliptic curve private key.
-        :param as_string: Whether to return the serialized key as a string or bytes.
-        :return: Serialized private key in PEM format.
+        Args:
+            private_key (ec.EllipticCurvePrivateKey): Elliptic curve private key.
+            return_type (type[StrBytes]): Whether to return the serialized key as a string or bytes.
+
+        Returns:
+            StrBytes: Serialized private key in PEM format.
         """
         key = private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
@@ -111,8 +118,11 @@ class ECDHHelper:
         """
         Deserializes a PEM-encoded private key from bytes or hex string.
 
-        :param data: Serialized private key in bytes or hex string format.
-        :return: Elliptic curve private key object.
+        Args:
+            data (bytes | str): Serialized private key in bytes or hex string format.
+
+        Returns:
+            ec.EllipticCurvePrivateKey: Elliptic curve private key object.
         """
         if isinstance(data, str):
             data = bytes.fromhex(data)
@@ -122,14 +132,18 @@ class ECDHHelper:
 
     @staticmethod
     def serialize_public_key(
-        public_key: ec.EllipticCurvePublicKey, return_type: type[StrBytes] = bytes
+        public_key: ec.EllipticCurvePublicKey,
+        return_type: type[StrBytes] = bytes,
     ) -> StrBytes:
         """
         Serializes a public key to PEM format.
 
-        :param public_key: Elliptic curve public key.
-        :param as_string: Whether to return the serialized key as a string or bytes.
-        :return: Serialized public key in PEM format.
+        Args:
+            public_key (ec.EllipticCurvePublicKey): Elliptic curve public key.
+            return_type (type[StrBytes]): Whether to return the serialized key as a string or bytes.
+
+        Returns:
+            StrBytes: Serialized public key in PEM format.
         """
         key = public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
@@ -142,8 +156,11 @@ class ECDHHelper:
         """
         Deserializes a PEM-encoded public key from bytes or hex string.
 
-        :param data: Serialized public key in bytes or hex string format.
-        :return: Elliptic curve public key object.
+        Args:
+            data (bytes | str): Serialized public key in bytes or hex string format.
+
+        Returns:
+            ec.EllipticCurvePublicKey: Elliptic curve public key object.
         """
         if isinstance(data, str):
             data = bytes.fromhex(data)
@@ -151,38 +168,48 @@ class ECDHHelper:
 
     @staticmethod
     def generate_shared_secret(
-        private_key: ec.EllipticCurvePrivateKey, public_key: ec.EllipticCurvePublicKey
-    ):
+        private_key: ec.EllipticCurvePrivateKey,
+        public_key: ec.EllipticCurvePublicKey,
+    ) -> bytes:
         """
         Generates a shared secret using ECDH key exchange.
 
-        :param private_key: Elliptic curve private key.
-        :param public_key: Elliptic curve public key.
-        :return: Shared secret bytes.
+        Args:
+            private_key (ec.EllipticCurvePrivateKey): Elliptic curve private key.
+            public_key (ec.EllipticCurvePublicKey): Elliptic curve public key.
+
+        Returns:
+            bytes: Shared secret bytes.
         """
         shared_secret = private_key.exchange(ec.ECDH(), public_key)
         return shared_secret
 
     @staticmethod
-    def encrypt_data(data: bytes, shared_secret: bytes):
+    def encrypt_data(data: bytes, shared_secret: bytes) -> bytes:
         """
         Encrypts data using AES encryption with the given shared secret.
 
-        :param data: Data to encrypt.
-        :param shared_secret: Shared secret used for encryption.
-        :return: Encrypted data (ciphertext).
+        Args:
+            data (bytes): Data to encrypt.
+            shared_secret (bytes): Shared secret used for encryption.
+
+        Returns:
+            bytes: Encrypted data (ciphertext).
         """
         ciphertext = AESHelper(shared_secret).encrypt(data)
         return ciphertext
 
     @staticmethod
-    def decrypt_data(ciphertext: bytes, shared_secret: bytes):
+    def decrypt_data(ciphertext: bytes, shared_secret: bytes) -> bytes:
         """
         Decrypts data using AES encryption with the given shared secret.
 
-        :param ciphertext: Encrypted data (ciphertext).
-        :param shared_secret: Shared secret used for decryption.
-        :return: Decrypted data.
+        Args:
+            ciphertext (bytes): Encrypted data (ciphertext).
+            shared_secret (bytes): Shared secret used for decryption.
+
+        Returns:
+            bytes: Decrypted data.
         """
         data = AESHelper(shared_secret).decrypt(ciphertext)
         return data

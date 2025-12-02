@@ -11,8 +11,10 @@ class AbstractKMS(ABC):
         """
         Generate a Key Encryption Key (KEK).
 
-        :param description: Description for the key.
-        :return: Key ID of the generated KEK.
+        Args:
+            description (str): Description for the key.
+        Returns:
+            str: Key ID of the generated KEK.
         """
         pass
 
@@ -21,9 +23,11 @@ class AbstractKMS(ABC):
         """
         Encrypt a Data Encryption Key (DEK).
 
-        :param dek: The plaintext DEK to encrypt.
-        :param key_id: The Key ID to use for encryption.
-        :return: Encrypted DEK as bytes.
+        Args:
+            dek (bytes): The plaintext DEK to encrypt.
+            key_id (str): The Key ID to use for encryption.
+        Returns:
+            bytes: Encrypted DEK as bytes.
         """
         pass
 
@@ -32,7 +36,9 @@ class AbstractKMS(ABC):
         """
         Decrypt a Data Encryption Key (DEK).
 
-        :param encrypted_dek: The encrypted DEK to decrypt.
-        :return: Plaintext DEK as bytes.
+        Args:
+            encrypted_dek (bytes): The encrypted DEK to decrypt.
+        Returns:
+            bytes: Plaintext DEK as bytes.
         """
         pass

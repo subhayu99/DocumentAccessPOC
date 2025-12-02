@@ -12,6 +12,17 @@ StrUuid = TypeVar("StrUuid", str, uuid.UUID)
 def slugify(
     text: str, replace_specials_with: str = "_", replace_spaces_with: str = "-"
 ) -> str:
+    """
+    Convert a given string into a slug format.
+
+    Args:
+        text (str): The string to be converted into a slug.
+        replace_specials_with (str, optional): The character to replace special characters with. Defaults to "_.
+        replace_spaces_with (str, optional): The character to replace spaces with. Defaults to "-".
+
+    Returns:
+        str: The slugified string.
+    """
     return (
         re.sub(r"[^\w\s-]+", replace_specials_with, text)
         .strip()
